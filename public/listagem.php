@@ -8,9 +8,13 @@
     //Lembrar de dá espaço para concatenar, ou no início ou no fim
     $produtos = "SELECT produtoID, nomeproduto, tempoentrega, precounitario, imagempequena ";
     $produtos .= "FROM produtos ";
+    if (isset($_GET["produto"])) {
+        $nome_produto   = urlencode($_GET["produto"]);
+        $produtos       .= "WHERE nomeproduto LIKE '%{$nome_produto}%' "; 
+    }
     $resultado = mysqli_query($conecta, $produtos);
     if(!$resultado) {
-        die("Falha na consulta ao banco de dados");   
+        die("Falha na consulta ao banco");   
     }
 ?>
 
