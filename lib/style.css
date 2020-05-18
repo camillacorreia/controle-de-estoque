@@ -53,8 +53,13 @@ header {
     color: #fff;
 }
 
-#header_saudacao h5 a:hover{
+#header_saudacao h5 a{
     color: #f2a900;
+    text-decoration: none;
+}
+
+#header_saudacao h5 a:hover{
+    color: #fff;
     text-decoration: none;
 }
 

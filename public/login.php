@@ -1,46 +1,36 @@
 <?php require_once("../conexao/conexao.php"); ?>
 <?php
-    //Teste de segurança
+    //Adicionar variáveis de sessão
     session_start();
-    if ( !isset($_SESSION["user_portal"]) ) {
-        header("location:login.php");
-    }
-    //Fim do teste de seguranca
 
-    if ( isset($_GET["codigo"]) ) {
-        $produto_id = $_GET["codigo"];
-    }
-    else {
-        Header("Location: inicial.php");
-    }
-
-    //Consulta ao banco de dados
-    $consulta = "SELECT * ";
-    $consulta .= "FROM produtos ";
-    $consulta .= "WHERE produtoID = {$produto_id} ";
-    $detalhe    = mysqli_query($conecta,$consulta);
-
-    //Testar erro
-    if ( !$detalhe ) {
-        die("Falha no Banco de dados");
-    } else {
-        $dados_detalhe = mysqli_fetch_assoc($detalhe);
-        $produtoID      = $dados_detalhe["produtoID"];
-        $nomeproduto    = $dados_detalhe["nomeproduto"];
-        $descricao      = $dados_detalhe["descricao"];
-        $codigobarra    = $dados_detalhe["codigobarra"];
-        $tempoentrega   = $dados_detalhe["tempoentrega"];
-        $precorevenda   = $dados_detalhe["precorevenda"];
-        $precounitario  = $dados_detalhe["precounitario"];
-        $estoque        = $dados_detalhe["estoque"];
-        $imagemgrande   = $dados_detalhe["imagemgrande"];
+    if ( isset( $_POST["usuario"] )  ) {
+        $usuario    = $_POST["usuario"];
+        $senha      = $_POST["senha"];    
+        
+        $login = "SELECT * ";
+        $login .= "FROM clientes ";
+        $login .= "WHERE usuario = '{$usuario}' and senha = '{$senha}' ";
+    
+        $acesso = mysqli_query($conecta, $login);
+        if ( !$acesso ) {
+            die("Falha na consulta ao banco");
+        }
+        
+        $informacao = mysqli_fetch_assoc($acesso);
+        
+        if ( empty($informacao) ) {
+            $mensagem = "Login sem sucesso.";
+        } else {
+            $_SESSION["user_portal"] = $informacao["clienteID"];
+            header("location:listagem.php");
+        }
     }
 ?>
 <!doctype html>
 <html lang="pt-br">
 <html>
     <head>
-        
+
         <meta charset="UTF-8">
         <title>Controle de Estoque</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -93,18 +83,24 @@
 
         <main>
 
-        <div id="detalhe_produto">
-                <ul>
-                    <li class="imagem"><img src="<?php echo $imagemgrande ?>"></li>
-                    <li><h2><?php echo $nomeproduto ?></h2></li>
-                    <li><b>Descrição: </b><?php echo $descricao ?></li>
-                    <li><b>Código de Barra: </b><?php echo $codigobarra ?></li>
-                    <li><b>Tempo de Entrega: </b><?php echo $tempoentrega ?> dias</li>
-                    <li><b>Preço Revenda: </b><?php echo "R$ " . number_format($precorevenda,2,",",".") ?></li>
-                    <li><b>Preço Unitário: </b><?php echo "R$ " . number_format($precounitario,2,",",".") ?></li>
-                    <li><b>Estoque: </b><?php echo $estoque ?></li>
-                </ul>
-               
+            <div id="janela_login">
+
+                <form action="login.php" method="post">
+                    
+                    <h2>Tela de Login</h2>
+                    <input type="text" name="usuario" placeholder="Usuário">
+                    <input type="password" name="senha" placeholder="Senha">
+                    <input type="submit" value="Login">
+                    
+                    <?php
+                        if ( isset($mensagem)) { 
+                    ?>
+                        <p><?php echo $mensagem ?></p>
+                    
+                    <?php
+                        }
+                    ?>  
+                </form>
             </div>
 
         </main>

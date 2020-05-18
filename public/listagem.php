@@ -1,10 +1,17 @@
 <?php require_once("../conexao/conexao.php"); ?>
 
 <?php
-    // Determinar localidade BR
+    //Teste de segurança
+    session_start();
+    if ( !isset($_SESSION["user_portal"]) ) {
+        header("location:login.php");
+    }
+    //Fim do teste de seguranca
+
+    //Determinar localidade BR
     setlocale(LC_ALL, 'pt_BR');
 
-    // Consulta ao banco de dados
+    //Consulta ao banco de dados
     //Lembrar de dá espaço para concatenar, ou no início ou no fim
     $produtos = "SELECT produtoID, nomeproduto, tempoentrega, precounitario, imagempequena ";
     $produtos .= "FROM produtos ";
@@ -14,7 +21,7 @@
     }
     $resultado = mysqli_query($conecta, $produtos);
     if(!$resultado) {
-        die("Falha na consulta ao banco");   
+        die("Falha na consulta ao banco de dados");   
     }
 ?>
 
@@ -47,7 +54,27 @@
                 </div>
 
                 <div id="header_saudacao">
-                    <h5>Bem vindo(a), Camilla. <a href="#"> Sair</a></h5>
+                    <?php
+                        if ( isset($_SESSION["user_portal"])  ) {
+                            $user = $_SESSION["user_portal"];
+                            
+                            $saudacao = "SELECT nomecompleto ";
+                            $saudacao .= "FROM clientes ";
+                            $saudacao .= "WHERE clienteID = {$user} ";
+                            
+                            $saudacao_login = mysqli_query($conecta,$saudacao);
+                            if(!$saudacao_login) {
+                                die("Falha no banco");   
+                            }
+                            
+                            $saudacao_login = mysqli_fetch_assoc($saudacao_login);
+                            $nome = $saudacao_login["nomecompleto"];
+                    
+                    ?>
+                        <div><h5>Bem vindo(a), <?php echo $nome ?> | <a href="sair.php">Sair</a></h5></div>
+                    <?php
+                        }
+                    ?>
                 </div>
 
             </div>
@@ -89,8 +116,6 @@
                 ?>           
             </div>
             
-        </main>
-
         </main>
 
         <footer>
