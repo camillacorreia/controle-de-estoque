@@ -196,6 +196,18 @@ main #janela_login form h2  {
     color:#f2a900;
 }
 
+main #janela_login form p {
+    font-family: "Open Sans", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    background: #F00;
+    color: #FFF;
+    padding: 10px;
+    border-radius: 5px;
+    width:120px;
+    text-align: center;
+}
+
 main #janela_login form input[type="text"] {
     width:280px;
     padding:10px;

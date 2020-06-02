@@ -13,13 +13,13 @@
     
         $acesso = mysqli_query($conecta, $login);
         if ( !$acesso ) {
-            die("Falha na consulta ao banco");
+            die("Falha na consulta ao banco de dados");
         }
         
         $informacao = mysqli_fetch_assoc($acesso);
         
         if ( empty($informacao) ) {
-            $mensagem = "Login sem sucesso.";
+            $mensagem = "Login sem sucesso";
         } else {
             $_SESSION["user_portal"] = $informacao["clienteID"];
             header("location:listagem.php");
